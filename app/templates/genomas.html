@@ -1,0 +1,691 @@
+{% extends "post.html" %}
+
+{% block title %}Análisis COVID 19{% endblock %}
+
+{% block post %}
+
+    <!-- Post -->
+    <article class="wrapper style1">
+        <div class="container">
+            <header>
+                <h1 style="text-align: center;"><strong>Análisis de genomas del COVID19</strong></h1>
+            </header>
+            <p style="text-align: justify;"><a href="https://github.com/IanPangDev/Genomas_Covid19" target="_blank">Proyecto</a> dedicado al análisis de genomas del COVID-19 de varios países y años, empleando Biopython para procesar y estudiar datos genómicos. Incluye la identificación y comparación de mutaciones y variantes en distintos contextos temporales y geográficos.
+            </p>
+            <a href="{{ url_for('static', filename='images/eucarionte.png') }}" target="_blank">
+                <img src="{{ url_for('static', filename='images/eucarionte.png') }}" alt="" style="width: 50%;"/>
+            </a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Diagrama célula eucarionte - ADN</u></i></figcaption>
+
+            <h2 style="text-align: center;">Tecnologías</h2>
+            
+            <ul>
+                <li style="text-align: left;">Python</li>
+                <ul style="margin-bottom: 0%;">
+                    <li style="text-align: left; font-size: medium;">BioPython</li>
+                    <li style="text-align: left; font-size: medium;">Pandas</li>
+                    <li style="text-align: left; font-size: medium;">Plotly</li>
+                </ul>
+            </ul>
+            
+            <h2 style="text-align: center;">Data Understanding</h2>
+            
+            <p style="text-align: justify;">Los genomas fueron obtenidos en <a href="https://www.kaggle.com/datasets/tunguz/covid19-genomes" target="_blank">Kaggle</a>, que a su vez provenian de la <a href="https://www.ncbi.nlm.nih.gov/labs/virus/vssi/#/virus?SeqType_s=Nucleotide&VirusLineage_ss=taxid:2697049" target="_blank">NCBI</a> (The National Center for Biotechnology Information).<br>
+            En total se observaron 41 genomas diferentes.
+            </p>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                      <tr style="text-align: right;">
+                        <th></th>
+                        <th>LC528232.txt</th>
+                        <th>LC528233.txt</th>
+                        <th>LC529905.txt</th>
+                        <th>LC534418.txt</th>
+                        <th>LC534419.txt</th>
+                        <th>LR757995.txt</th>
+                        <th>LR757996.txt</th>
+                        <th>LR757998.txt</th>
+                        <th>MN908947.txt</th>
+                        <th>MN938384.txt</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>0</th>
+                        <td>T</td>
+                        <td>C</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>C</td>
+                        <td>T</td>
+                        <td>C</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>C</td>
+                      </tr>
+                      <tr>
+                        <th>1</th>
+                        <td>G</td>
+                        <td>C</td>
+                        <td>T</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>T</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>T</td>
+                        <td>A</td>
+                      </tr>
+                      <tr>
+                        <th>2</th>
+                        <td>C</td>
+                        <td>C</td>
+                        <td>T</td>
+                        <td>G</td>
+                        <td>C</td>
+                        <td>T</td>
+                        <td>G</td>
+                        <td>C</td>
+                        <td>T</td>
+                        <td>A</td>
+                      </tr>
+                      <tr>
+                        <th>3</th>
+                        <td>T</td>
+                        <td>C</td>
+                        <td>A</td>
+                        <td>G</td>
+                        <td>C</td>
+                        <td>C</td>
+                        <td>G</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>C</td>
+                      </tr>
+                      <tr>
+                        <th>4</th>
+                        <td>T</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>T</td>
+                        <td>T</td>
+                        <td>C</td>
+                        <td>T</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>C</td>
+                      </tr>
+                      <tr>
+                        <th>5</th>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>T</td>
+                        <td>T</td>
+                        <td>C</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>A</td>
+                        <td>A</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+            
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla de contenido de cada archivo txt.</u></i></figcaption>
+
+            <p style="text-align: justify;">Podemos observar que los archivos nos muestran cadenas que representan el genoma del virus. Éstas estan compuestas de las bases nitrogenadas.</p>
+
+            <h3 style="text-align: center;">Gráficas descriptivas de los genomas</h3>
+            
+            <div style="display: flexbox; justify-content: center; align-items: center; max-width: 100%">
+            {% include 'graph_genomas/caracteres_covid19.html' %}
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Gráfica de la cantidad de caracteres por archivo quedandonos con los que si tengan datos.</u></i></figcaption>
+            
+            <p style="text-align: justify;">Ahora conseguimos el conteo de las bases nitrogenadas por archivo.</p>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                      <tr style="text-align: right;">
+                        <th></th>
+                        <th>LC528232.txt</th>
+                        <th>LC528233.txt</th>
+                        <th>LC529905.txt</th>
+                        <th>LC534418.txt</th>
+                        <th>LC534419.txt</th>
+                        <th>LR757995.txt</th>
+                        <th>LR757996.txt</th>
+                        <th>LR757998.txt</th>
+                        <th>MN908947.txt</th>
+                        <th>MN938384.txt</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>T</th>
+                        <td>9605</td>
+                        <td>9601</td>
+                        <td>9596</td>
+                        <td>9595</td>
+                        <td>9590</td>
+                        <td>9589</td>
+                        <td>9586</td>
+                        <td>9584</td>
+                        <td>9594</td>
+                        <td>9586</td>
+                      </tr>
+                      <tr>
+                        <th>A</th>
+                        <td>8939</td>
+                        <td>8933</td>
+                        <td>8954</td>
+                        <td>8931</td>
+                        <td>8932</td>
+                        <td>8932</td>
+                        <td>8933</td>
+                        <td>8937</td>
+                        <td>8954</td>
+                        <td>8909</td>
+                      </tr>
+                      <tr>
+                        <th>G</th>
+                        <td>5865</td>
+                        <td>5869</td>
+                        <td>5864</td>
+                        <td>5861</td>
+                        <td>5860</td>
+                        <td>5861</td>
+                        <td>5861</td>
+                        <td>5859</td>
+                        <td>5863</td>
+                        <td>5859</td>
+                      </tr>
+                      <tr>
+                        <th>C</th>
+                        <td>5493</td>
+                        <td>5499</td>
+                        <td>5489</td>
+                        <td>5491</td>
+                        <td>5492</td>
+                        <td>5490</td>
+                        <td>5488</td>
+                        <td>5486</td>
+                        <td>5492</td>
+                        <td>5484</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla del conteo de las bases nitrogenadas por archivo.</u></i></figcaption>
+
+            <div style="display: block; margin: auto; max-width: 400px;">
+                {% include 'graph_genomas/bases_promedio.html' %}
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Gráfica del promedio de las bases nitrogenadas por iniciales.</u></i></figcaption>
+
+            <p style="text-align: justify;">Ahora conseguimos la relacion o similitud que existe entre los diferentes genomas.</p>
+            
+            <div style="display: block; margin: auto; max-width: 400px;">
+                {% include 'graph_genomas/similitudes_all.html' %}
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Grafo para identificar los genomas mas parecidos.</u></i></figcaption>
+            
+            <p style="text-align: justify;">Con la finalidad de tener mas informacion de los genomas, se realizaron grafos comparativos para saber en que regiones los genomas se parecen.</p>
+            
+            <div style="display: block; margin: auto; max-width: 400px;">
+                {% include 'graph_genomas/similitud_1x1.html' %}
+            </div>
+            
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Grafo comparativo entre dos genomas (primeras 26 relaciones).</u></i></figcaption>
+            
+            <p style="text-align: justify;">Con la finalidad de hacer mas didáctico y visual el analisis se creo un modelo 3D.</p>
+            
+            <div style="display: block; margin: auto; max-width: 400px;">
+                {% include 'graph_genomas/adn_3D.html' %}
+            </div>
+            
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Modelo 3D de la cadena de ADN del genoma LC528232.</u></i></figcaption>
+
+            <h2 style="text-align: center;">Data Preprocessing</h2>
+
+            <p style="text-align: justify;">Para obtener las proteinas de cada genoma se hara el siguiente proceso el cual consisten en tres pasos:
+            </p>
+            <ul>
+                <li style="text-align: left;"><strong>TRANSCRIPCIÓN</strong>: El ADN se copia en un ARN mensajero (ARNm)</li>
+                <li style="text-align: left;"><strong>TRADUCCIÓN</strong>: El ARNm se traduce en aminoácidos</li>
+                <li style="text-align: left;"><strong>PLEGAMIENTO DE AMINOÁCIDOS</strong>: Una secuencia de 20 o más aminoácidos (los bloques constructores de las proteínas) forma una proteína.</li>
+            </ul>
+            <a href="{{ url_for('static', filename='images/covid_processing.png') }}" target="_blank">
+              <img src="{{ url_for('static', filename='images/covid_processing.png') }}" alt="" style="width: 50%;"/>
+            </a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Diagrama del procesamiento de los datos</u></i></figcaption>
+            <p style="text-align: justify;">Todo este proceso se realizara con BioPython.</p>
+
+            <h3>Vistazo general del proceso de obtención de proteinas</h3>
+            
+            <p style="text-align: justify;">Realizando la transcripción:</p>
+            
+            <div class="code">
+              <pre><code>
+"ADN:","".join(df['LC528232.txt'].dropna())[:50]
+"mRNA:", Seq("".join(df['LC528232.txt'].dropna())).transcribe()[:50]
+
+ADN: TGCTTATGAAAATTTTAATCTCCCAGGTAACAAACCAACCAACTTTCGAT
+mRNA: UGCUUAUGAAAAUUUUAAUCUCCCAGGUAACAAACCAACCAACUUUCGAU
+              </code></pre>
+            </div>
+
+            <p style="text-align: justify;">Realizando la traducción:</p>
+            
+            <div class="code">
+              <pre><code>
+"mRNA:", Seq("".join(df['LC528232.txt'].dropna())).transcribe()[:50]
+"Cadena de aminoacidos:", Seq("".join(df['LC528232.txt'].dropna())).transcribe().translate()[:41]
+"Numero de aminoacidos encontrados:", len(Seq("".join(df['LC528232.txt'].dropna())).transcribe().translate())
+
+mRNA: UGCUUAUGAAAAUUUUAAUCUCCCAGGUAACAAACCAACCAACUUUCGAU
+Cadena de aminoacidos: CL*KF*SPR*QTNQLSISCRSVL*TNFKICVAVTRLHA*CT
+Numero de aminoacidos encontrados: 9967
+              </code></pre>
+            </div>
+
+            <p style="text-align: justify;">Obteniendo los aminoácidos:</p>
+
+            <div class="code">
+              <pre><code>
+Seq("".join(df['LC528232.txt'].dropna())).transcribe().translate().split('*')[:10]
+
+[Seq('CL'),
+  Seq('KF'),
+  Seq('SPR'),
+  Seq('QTNQLSISCRSVL'),
+  Seq('TNFKICVAVTRLHA'),
+  Seq('CTHAV'),
+  Seq('LITNYCR'),
+  Seq('QDTSNSSIFCRLLTVSSVLQPIISTSRFRPGVTER'),
+  Seq('DGEPCPWFQRENTRPTQFACFTGSRRARTWLWRLRGGGLIRGTSTS'),
+  Seq('RWHLWLSRS')]
+              </code></pre>
+            </div>
+
+            <p style="text-align: justify;">Buscando las proteinas (las secuencias mayores a 20 amonoacidos) se encontraron un total de <strong>5</strong>.</p>
+            
+            <h3>Obteniendo las proteinas de cada genoma</h3>
+
+            <p style="text-align: justify;">Se procedera a obtener mas información de las proteinas encontradas en los genomas.</p>
+            
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr style="text-align: right;">
+                    <th></th>
+                    <th>LC528232.txt</th>
+                    <th>LC528233.txt</th>
+                    <th>LC529905.txt</th>
+                    <th>LC534418.txt</th>
+                    <th>LC534419.txt</th>
+                    <th>LR757995.txt</th>
+                    <th>LR757996.txt</th>
+                    <th>LR757998.txt</th>
+                    <th>MN908947.txt</th>
+                    <th>MN938384.txt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>0</th>
+                    <td>CTIVFKRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFL...</td>
+                    <td>PKGKMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEA...</td>
+                    <td>CTIVFKRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFL...</td>
+                    <td>PKGKMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEA...</td>
+                    <td>CTIVFKRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFL...</td>
+                    <td>CTIVFKRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFL...</td>
+                    <td>VSSGCDRKVRWRALSLVSTRKHTSNSVCLFYRFATCSYVALETPWR...</td>
+                    <td>PKGKMESLVPGFNEKTHVQLSLPVLQVRDVLVRGFGDSVEEVLSEA...</td>
+                    <td>CTIVFKRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFL...</td>
+                    <td>VSSGCDRKVRWRALSLVSTRKHTSNSVCLFYRFATCSYVALETPWR...</td>
+                  </tr>
+                  <tr>
+                    <th>1</th>
+                    <td>ASAQRSQITLHINELMDLFMRIFTIGTVTLKQGEIKDATPSDFVRA...</td>
+                    <td>VKWSCVAVHYMLNQVEPHQEMPQLLMLIVFLTFVKLSRPMLMHFYL...</td>
+                    <td>ASAQRSQITLHINELMDLFMRIFTIGTVTLKQGEIKDATPSDFVRA...</td>
+                    <td>VKWSCVAVHYMLNQVEPHQEMPQLLMLIVFLTFVKLSRPMLMHFYL...</td>
+                    <td>ASAQRSQITLHINELMDLFMRIFTIGTVTLKQGEIKDATPSDFVRA...</td>
+                    <td>ASAQRSQITLHINELMDLFMRIFTIGTVTLKQGEIKDATPSDFVRA...</td>
+                    <td>ATSLALILMKIFKKTGTLNIAVVLPVNSCVSLTEGHTLAMSITTSV...</td>
+                    <td>VKWSCVAVHYMLNQVEPHQEMPQLLMLIVFLTFVKLSRPMLMHFYL...</td>
+                    <td>ASAQRSQITLHINELMDLFMRIFTIGTVTLKQGEIKDATPSDFVRA...</td>
+                    <td>ATSLALILMKIFKKTGTLNIAVVLPVNSCVSLTEGHTLAMSITTSV...</td>
+                  </tr>
+                  <tr>
+                    <th>2</th>
+                    <td>AQADEYELMYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALR...</td>
+                    <td>AIIVNHINHPLVFHCVLMDKFLVYIKIHVLVAIMLLTLMQLQHVTG...</td>
+                    <td>AQADEYELMYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALR...</td>
+                    <td>AIIVNHINHPLVFHCVLMDKFLVYIKIHVLVAIMLLTLMQLQHVTG...</td>
+                    <td>AQADEYELMYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALR...</td>
+                    <td>AQADEYELMYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALR...</td>
+                    <td>HVLVKLHALCPNNWTLLTLRGVYTAAVNMSMKLLGTRNVLKRAMNC...</td>
+                    <td>AIIVNHINHPLVFHCVLMDKFLVYIKIHVLVAIMLLTLMQLQHVTG...</td>
+                    <td>AQADEYELMYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALR...</td>
+                    <td>HVLVKLHALCPNNWTLLTLRGVYTAAVNMSMKLLGTRNVLKRAMNC...</td>
+                  </tr>
+                  <tr>
+                    <th>3</th>
+                    <td>QQMFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSL...</td>
+                    <td>LTPVLKDSSFLQQKRSKLLRRHLNCLMVLLLYVKCCLTENYIFHGK...</td>
+                    <td>QQMFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSL...</td>
+                    <td>LTPVLKDSSFLQQKRSKLLRRHLNCLMVLLLYVKCCLTENYIFHGK...</td>
+                    <td>QQMFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSL...</td>
+                    <td>QQMFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSL...</td>
+                    <td>VVTIQVLLEKVPKVLMTTFLKYSKKRKSTSILLVTLNLMKRSPLFW...</td>
+                    <td>LTPVLKDSSFLQQKRSKLLRRHLNCLMVLLLYVKCCLTENYIFHGK...</td>
+                    <td>QQMFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSL...</td>
+                    <td>VVTIQVLLEKVPKVLMTTFLKYSKKRKSTSILLVTLNLMKRSPLFW...</td>
+                  </tr>
+                  <tr>
+                    <th>4</th>
+                    <td>TNMKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNS...</td>
+                    <td>CHKSTMLELLAYTQHSISQMSFLAMLQIIKRLVCKSILHSRDHLVL...</td>
+                    <td>TNMKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNS...</td>
+                    <td>CHKSTMLELLAYTQHSISQMSFLAMLQIIKRLVCKSILHSRDHLVL...</td>
+                    <td>TNMKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNS...</td>
+                    <td>TNMKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNS...</td>
+                    <td>MSGVWLHTTYLMSLVSLNWLHICIVLSTLQMRMKKKVIVKKKSLSH...</td>
+                    <td>CHKSTMLELLAYTQHSISQMSFLAMLQIIKRLVCKSILHSRDHLVL...</td>
+                    <td>TNMKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNS...</td>
+                    <td>MSGVWLHTTYLMSLVSLNWLHICIVLSTLQMRMKKKVIVKKKSLSH...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla de las proteinas por genoma.</u></i></figcaption>
+
+            <p style="text-align: justify;">Analizando las proteinas únicas encontramos:<br>
+            <strong>Proteinas recuperadas</strong>: 546<br>
+            <strong>Proteinas unicas</strong>: 120
+            </p>
+
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr style="text-align: right;">
+                    <th></th>
+                    <th style="text-align: center;">Proteinas</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>0</th>
+                    <td>CTIVFKRVCGVSAARLTPCGTGTSTDVVYRAFDIYNDKVAGFAKFL...</td>
+                  </tr>
+                  <tr>
+                    <th>1</th>
+                    <td>ASAQRSQITLHINELMDLFMRIFTIGTVTLKQGEIKDATPSDFVRA...</td>
+                  </tr>
+                  <tr>
+                    <th>2</th>
+                    <td>AQADEYELMYSFVSEETGTLIVNSVLLFLAFVVFLLVTLAILTALR...</td>
+                  </tr>
+                  <tr>
+                    <th>3</th>
+                    <td>QQMFHLVDFQVTIAEILLIIMRTFKVSIWNLDYIINLIIKNLSKSL...</td>
+                  </tr>
+                  <tr>
+                    <th>4</th>
+                    <td>TNMKIILFLALITLATCELYHYQECVRGTTVLLKEPCSSGTYEGNS...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla de las proteinas únicas.</u></i></figcaption>
+
+            <p style="text-align: justify;">Con ello, podemos obtener información de que proteina estamos visualizando con la herramienta PSI-BLAST. En ella iremos colocando las cadenas que encontramos. Por otro lado, también buscaré de donde fue obtenido cada genoma para poder extraer mas información.<br>
+            Para los puntos antes mencionados utilizaré un sistema de <a href="https://github.com/IanPangDev/Genomas_Covid19/blob/main/get_info.py" target="_blank">webscraping</a>.
+            </p>
+
+            <div style="display: inline-block; gap: 10px; padding-bottom: 20px;">
+              <div class="table-wrapper">
+                <table>
+                  <thead>
+                    <tr style="text-align: right;">
+                      <th></th>
+                      <th>Proteinas</th>
+                      <th>Name</th>
+                      <th>Porcentaje</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <th>0</th>
+                      <td>CTIVFKRVCGVSAARLTPC...</td>
+                      <td>Replicase polyprotein 1ab...</td>
+                      <td>100.0</td>
+                    </tr>
+                    <tr>
+                      <th>1</th>
+                      <td>ASAQRSQITLHINELMDLF...</td>
+                      <td>ORF3a protein...</td>
+                      <td>100.0</td>
+                    </tr>
+                    <tr>
+                      <th>2</th>
+                      <td>AQADEYELMYSFVSEETGT...</td>
+                      <td>Envelope membrane protein...</td>
+                      <td>100.0</td>
+                    </tr>
+                    <tr>
+                      <th>3</th>
+                      <td>QQMFHLVDFQVTIAEILLI...</td>
+                      <td>ORF6 protein...</td>
+                      <td>100.0</td>
+                    </tr>
+                    <tr>
+                      <th>4</th>
+                      <td>TNMKIILFLALITLATCEL...</td>
+                      <td>ORF7a protein...</td>
+                      <td>100.0</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div>
+                {% include 'graph_genomas/proteinas_identificadas.html' %}
+              </div>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla y gráfica del resultado del web scraping para proteinas.</u></i></figcaption>
+
+            <p style="text-align: justify;">Ahora identificaremos las proteinas dentro de los genomas.</p>
+
+            <div class="table-wrapper" style="height: 500px;">
+              <table>
+                <thead>
+                  <tr style="text-align: right;">
+                    <th></th>
+                    <th>LC528232.txt</th>
+                    <th>LC528233.txt</th>
+                    <th>LC529905.txt</th>
+                    <th>LC534418.txt</th>
+                    <th>LC534419.txt</th>
+                    <th>LR757995.txt</th>
+                    <th>LR757996.txt</th>
+                    <th>LR757998.txt</th>
+                    <th>MN908947.txt</th>
+                    <th>MN938384.txt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>0</th>
+                    <td>Replicase polyprotein 1ab OS=Severe acute resp...</td>
+                    <td>Replicase polyprotein 1a OS=Severe acute respi...</td>
+                    <td>Replicase polyprotein 1ab OS=Severe acute resp...</td>
+                    <td>Replicase polyprotein 1a OS=Severe acute respi...</td>
+                    <td>Replicase polyprotein 1ab OS=Severe acute resp...</td>
+                    <td>Replicase polyprotein 1ab OS=Severe acute resp...</td>
+                    <td>nan</td>
+                    <td>Replicase polyprotein 1a OS=Severe acute respi...</td>
+                    <td>Replicase polyprotein 1ab OS=Severe acute resp...</td>
+                    <td>nan</td>
+                  </tr>
+                  <tr>
+                    <th>1</th>
+                    <td>ORF3a protein OS=Severe acute respiratory synd...</td>
+                    <td>Mediator of RNA polymerase II transcription su...</td>
+                    <td>ORF3a protein OS=Severe acute respiratory synd...</td>
+                    <td>Mediator of RNA polymerase II transcription su...</td>
+                    <td>ORF3a protein OS=Severe acute respiratory synd...</td>
+                    <td>ORF3a protein OS=Severe acute respiratory synd...</td>
+                    <td>nan</td>
+                    <td>Mediator of RNA polymerase II transcription su...</td>
+                    <td>ORF3a protein OS=Severe acute respiratory synd...</td>
+                    <td>nan</td>
+                  </tr>
+                  <tr>
+                    <th>2</th>
+                    <td>Envelope small membrane protein OS=Severe acut...</td>
+                    <td>Small ribosomal subunit biogenesis GTPase RsgA...</td>
+                    <td>Envelope small membrane protein OS=Severe acut...</td>
+                    <td>Small ribosomal subunit biogenesis GTPase RsgA...</td>
+                    <td>Envelope small membrane protein OS=Severe acut...</td>
+                    <td>Envelope small membrane protein OS=Severe acut...</td>
+                    <td>nan</td>
+                    <td>Small ribosomal subunit biogenesis GTPase RsgA...</td>
+                    <td>Envelope small membrane protein OS=Severe acut...</td>
+                    <td>nan</td>
+                  </tr>
+                  <tr>
+                    <th>3</th>
+                    <td>ORF6 protein OS=Severe acute respiratory syndr...</td>
+                    <td>NACHT, LRR and PYD domains-containing protein ...</td>
+                    <td>ORF6 protein OS=Severe acute respiratory syndr...</td>
+                    <td>NACHT, LRR and PYD domains-containing protein ...</td>
+                    <td>ORF6 protein OS=Severe acute respiratory syndr...</td>
+                    <td>ORF6 protein OS=Severe acute respiratory syndr...</td>
+                    <td>nan</td>
+                    <td>NACHT, LRR and PYD domains-containing protein ...</td>
+                    <td>ORF6 protein OS=Severe acute respiratory syndr...</td>
+                    <td>nan</td>
+                  </tr>
+                  <tr>
+                    <th>4</th>
+                    <td>ORF7a protein OS=Severe acute respiratory synd...</td>
+                    <td>nan</td>
+                    <td>ORF7a protein OS=Severe acute respiratory synd...</td>
+                    <td>nan</td>
+                    <td>ORF7a protein OS=Severe acute respiratory synd...</td>
+                    <td>ORF7a protein OS=Severe acute respiratory synd...</td>
+                    <td>nan</td>
+                    <td>nan</td>
+                    <td>ORF7a protein OS=Severe acute respiratory synd...</td>
+                    <td>nan</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p style="text-align: justify;">Las 10 proteinas más encontradas dentro de los genomas se muestran a continuación:</p>
+
+            <div style="display: block; margin: auto;">
+              {% include 'graph_genomas/top10_proteinas.html' %}
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Gráfica de las 10 proteinas más encontradas.</u></i></figcaption>
+
+            <h3>Obteniendo mas información de cada genoma</h3>
+
+            <p style="text-align: justify;">De forma similar a la obtención de las proteinas, se utilizo <a href="https://github.com/IanPangDev/Genomas_Covid19/blob/main/get_country.py" target="_blank">webscraping</a> para obtener la fecha y localizacion de cada genoma analizado.</p>
+
+            <div class="table-wrapper">
+              <table border="1" class="dataframe">
+                <thead>
+                  <tr style="text-align: right;">
+                    <th></th>
+                    <th>Genoma</th>
+                    <th>Pais</th>
+                    <th>Fecha</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th>0</th>
+                    <td>LC528232</td>
+                    <td>Japan</td>
+                    <td>2020-02-10</td>
+                  </tr>
+                  <tr>
+                    <th>1</th>
+                    <td>LC528233</td>
+                    <td>Japan</td>
+                    <td>2020-02-10</td>
+                  </tr>
+                  <tr>
+                    <th>2</th>
+                    <td>LC529905</td>
+                    <td>Japan</td>
+                    <td>2020-01</td>
+                  </tr>
+                  <tr>
+                    <th>3</th>
+                    <td>LC534418</td>
+                    <td>Japan</td>
+                    <td>2020-02-14</td>
+                  </tr>
+                  <tr>
+                    <th>4</th>
+                    <td>LC534419</td>
+                    <td>Japan</td>
+                    <td>2020-03-09</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla del resultado del webscraping para genomas.</u></i></figcaption>
+            
+            <p style="text-align: justify;">Parece ser que algunos paises vienen con la provincia, por lo que solo se tomara el pais de procedencia. Además algunas fechas solo tienen año y mes, por lo tanto, se acortaran las fechas.</p>
+
+            <div class="code">
+              <pre><code>
+Antes de formatear
+['Japan', 'China:Wuhan', 'China', 'China: Shenzhen', 'USA', 'USA: Illinois', 'USA: CA', 'China: Wuhan', 'USA: AZ', 'Iran', 'India']
+['2020-02-10', '2020-01', '2020-02-14', '2020-03-09', '2019-12-26', '2020-01-01', '2019-12', '2020-01-10', '2020-01-11', '2020-01-19', '2020-01-02', '2020-01-21', '2020-01-23', '2020-01-22', '2019-12-30', '2020-04-28', '2021-04-10', '2021-04-06', '2021-04-07', '2021-03-15', '2021-04-05', '2021-03-26', '2021-03-18', '2020-08-20', '2020-08-16', '2021-01-16', '2020-06-16', '2020-08-15', '2021-03-12']
+Despues de formatear
+['Japan', 'China', 'USA', 'Iran', 'India']
+['2020-02', '2020-01', '2020-03', '2019-12', '2020-04', '2021-04', '2021-03', '2020-08', '2021-01', '2020-06']
+              </code></pre>
+            </div>
+
+            <p style="text-align: justify;">Se crearon las siguientes gráficas con esa información.</p>
+
+            <div style="display: center;">
+              <div>
+                {% include 'graph_genomas/bargenomas_pais.html' %}
+              </div>
+              <div>
+                {% include 'graph_genomas/mapa_genomas_pais.html' %}
+              </div>
+              <div>
+                {% include 'graph_genomas/fechas_genomas.html' %}
+              </div>
+            </div>
+
+            <p style="text-align: justify;">Por último, se creo una pequeña animación de los paises donde se fueron obteniendo los genomas respecto al tiempo.</p>
+            
+            <div>
+              {% include 'graph_genomas/anima_fecha_pais.html' %}
+            </div>
+        </div>
+    </article>
+    
+{% endblock %}

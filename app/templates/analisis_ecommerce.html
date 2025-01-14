@@ -1,0 +1,402 @@
+{% extends "post.html" %}
+
+{% block title %}Análisis E_commerce{% endblock %}
+
+{% block post %}
+
+    <!-- Post -->
+    <article class="wrapper style1">
+        <div class="container">
+            <header>
+                <h1 style="text-align: center;"><strong>Análisis E_commerce</strong></h1>
+            </header>
+            <p style="text-align: justify;">En este proyecto, realicé un proceso de análisis 
+                de datos sobre una
+                <a href="https://www.kaggle.com/datasets/terencicp/e-commerce-dataset-by-olist-as-an-sqlite-database" target="_blank">base de datos</a>
+                de una plataforma de e-commerce, revisando los registros almacenados para extraer información clave. Durante este análisis, pude identificar patrones en las compras de los usuarios, sus preferencias de productos y su comportamiento de navegación. Examiné los datos de los clientes, incluyendo sus historiales de compras y detalles demográficos, así como la información sobre los productos, como categorías, precios y cantidades vendidas. También revisé los registros de transacciones, métodos de pago y fechas de compra, con el objetivo de obtener insights sobre el rendimiento del negocio. Este proceso me permitió identificar inconsistencias en los datos, detectar oportunidades para mejorar la eficiencia operativa y optimizar la experiencia del usuario dentro de la plataforma de e-commerce.
+                <br>La base de datos se describe con el siguiente diagrama entidad-realación.
+            </p>
+            <a href="{{ url_for('static', filename='images/ecommerce_esquemabd.png') }}" target="_blank">
+                <img src="{{ url_for('static', filename='images/ecommerce_esquemabd.png') }}" alt="" style="width: 50%;"/>
+            </a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Diagrama entidad-realación</u></i></figcaption>
+            
+            <h2 style="text-align: center;">Tecnologías</h2>
+            
+            <ul>
+                <li style="text-align: left;">Python</li>
+                <ul style="margin-bottom: 0%;">
+                    <li style="text-align: left; font-size: medium;">PySpark</li>
+                    <li style="text-align: left; font-size: medium;">Pandas</li>
+                    <li style="text-align: left; font-size: medium;">Tensorflow</li>
+                    <li style="text-align: left; font-size: medium;"></li>
+                </ul>
+                <li style="text-align: left;">Sqlite</li>
+            </ul>
+
+            <h2 style="text-align: center;">Configuración del entorno</h2>
+
+            <div class="code">
+                <pre style="text-align: left;"><code>
+spark = pyspark.sql.SparkSession \
+    .builder \
+    .master("local[*]") \
+    .appName("E_commerce") \
+    .config("spark.driver.extraClassPath", "/content/sqlite-jdbc-3.36.0.1.jar") \
+    .getOrCreate()
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Crea una sesión de Spark</u></i></figcaption>
+            <div class="code">
+                <pre style="text-align: left;"><code>
+db_path = "jdbc:sqlite:/content/gdrive/MyDrive/Colab Notebooks/E_commerce/olist.sqlite"
+tables_names = ["customers", "leads_closed",
+"leads_qualified", "order_items", "order_payments",
+"order_reviews", "orders", "product_category_name_translation",
+"products", "sellers", "geolocation_fixed"]
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Ruta de la base de datos SQLite y nombres de las tablas</u></i></figcaption>
+            <div class="code">
+                <pre style="text-align: left;"><code>
+for table in tables_names:
+    df = spark.read \
+        .format("jdbc") \
+        .option("url", db_path) \
+        .option("dbtable", table) \
+        .load()
+dfs[table] = df
+            </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Obtención de las tablas de la base de datos</u></i></figcaption>
+            <div class="code">
+                <pre style="text-align: left;"><code>
+for table_name, df in dfs.items():
+    df.createOrReplaceTempView(table_name)
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Creación de tablas temporales</u></i></figcaption>
+            
+            <p style="text-align: justify;">Realicé un análisis a los apartados mostrados a continuación.</p>
+            
+            <h2 style="text-align: center;">Ventas</h2>
+            <p style="text-align: justify;">Para las localizaciones, me di cuenta de que existian insconsistencias, 
+                puesto que existían registros de la misma ciudad pero escrita de forma diferente o el 
+                nombre no era consistente con las coordenadas. Por ello se le removieron caractéres especiales a las
+                ciudades y además se confirmaron las coordenadas con la ciudad por medio de una geolocalización reversa.
+            </p>
+            <div class="code">
+                <pre>
++----+---------------+-------------------+-------------------+
+|  ID|Ciudad_de_venta|                lat|                lng|
++----+---------------+-------------------+-------------------+
+|1037|      sao paulo| -23.54562128115268| -46.63929204800168|
+|1046|      sao paulo| -23.54608112703553| -46.64482029837157|
+|1046|      sao paulo| -23.54612896641469| -46.64295148361138|
+|1041|      sao paulo|  -23.5443921648681| -46.63949930627844|
+|1009|      sao paulo| -23.54693540437998| -46.63658792659698|
+|1046|      sao paulo| -23.54588427921401| -46.64316319124004|
++----+---------------+-------------------+-------------------+
+                </pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla de localizaciones transformadas</u></i></figcaption>
+            <p style="text-align: justify;">Obtención del número de ventas en cada ciudad.</p>
+            <div class="code">
+                <pre style="text-align: left;"><code>
+SELECT DISTINCT UPPER(Ciudad_de_venta) as Ciudad, AVG(g.lat) as lat, AVG(g.lng) as lng, COUNT(*) AS Conteo_de_compras
+    FROM sellers as s
+    INNER JOIN geolocation_fixed g ON s.seller_zip_code_prefix = g.ID
+    GROUP BY g.Ciudad_de_venta
+    ORDER BY Conteo_de_compras DESC
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Consulta a la base de datos</u></i></figcaption>
+            <div class="code">
+                <pre style="text-align: left;"><code>
++--------------------+-------------------+-------------------+-----------------+
+|              Ciudad|                lat|                lng|Conteo_de_compras|
++--------------------+-------------------+-------------------+-----------------+
+|           SAO PAULO| -23.58824634740145|-46.606183171979644|            51089|
+|      RIO DE JANEIRO|-22.931295295185123| -43.32093984221967|            24331|
+|            CURITIBA|-25.448906281491922| -49.27755710644585|            20245|
+|      BELO HORIZONTE|-19.914074835042857| -43.94845687518377|            16694|
++--------------------+-------------------+-------------------+-----------------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla de número de ventas en cada ciudad descendente</u></i></figcaption>
+            <p style="text-align: justify;">Usando plotly se hizo la siguiente gráfica.</p>
+            
+            {% include 'graph_ecommerce/mapa_ventas.html' %}
+            
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Gráfica de las ciudades y sus ventas</u></i></figcaption>
+            
+            <p style="text-align: justify;">Obtención de los 10 productos más vendidos.</p>
+            <div class="code">
+                <pre style="text-align: left;"><code>
+SELECT UPPER(REPLACE(p.product_category_name, '_', ' ')) as Categoria_producto, COUNT(*) as Pedidos
+    FROM order_items as o
+    INNER JOIN products as p ON p.product_id = o.product_id
+    GROUP BY Categoria_producto
+    ORDER BY Pedidos DESC
+    LIMIT 10
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Consulta a la base de datos</u></i></figcaption>
+            
+            <div class="code">
+                <pre><code>
++--------------------+-------+
+|  Categoria_producto|Pedidos|
++--------------------+-------+
+|     CAMA MESA BANHO|  11115|
+|        BELEZA SAUDE|   9670|
+|       ESPORTE LAZER|   8641|
+|    MOVEIS DECORACAO|   8334|
+|INFORMATICA ACESS...|   7827|
+|UTILIDADES DOMEST...|   6964|
+|  RELOGIOS PRESENTES|   5991|
+|           TELEFONIA|   4545|
+|  FERRAMENTAS JARDIM|   4347|
+|          AUTOMOTIVO|   4235|
++--------------------+-------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Tabla de las 10 categoria más consumidas</u></i></figcaption>
+            
+            {% include 'graph_ecommerce/categoria_pedidos.html' %}
+            
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Gráfica 10 categoria más consumidas</u></i></figcaption>
+            
+            {% include 'graph_ecommerce/ciudad_categoria_ventas.html' %}
+            
+            {% include 'graph_ecommerce/ventas_fechas.html' %}
+
+            <p style="text-align: justify;">
+                Por último, calcule el promedio de ingreso recaudado por estado, 
+                el cual se muestra a continuación:
+            </p>
+
+            <div class="code">
+                <pre style="text-align: left;"><code>
+SELECT UPPER(g.Ciudad_de_venta) as Ciudad,
+    ROUND(AVG(p.payment_value), 2) as Promedio_gasto
+    FROM customers as c
+    INNER JOIN orders as o USING(customer_id)
+    INNER JOIN geolocation_fixed as g ON c.customer_zip_code_prefix = g.ID
+    INNER JOIN order_payments as p USING(order_id)
+    GROUP BY Ciudad
+    ORDER BY Promedio_gasto DESC
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Consulta a la base de datos</u></i></figcaption>
+            
+            <div class="code">
+                <pre><code>
++--------------------+--------------+
+|              Ciudad|Promedio_gasto|
++--------------------+--------------+
+|              PIANCO|       2324.99|
+|NOVA ESPERANCA DO...|       2252.66|
+|  ENGENHEIRO NAVARRO|       2106.55|
+|              LORETO|       1643.64|
+|             IBITITA|       1534.58|
+|         PARANATINGA|       1287.16|
+|               COARI|       1259.04|
+|BOM JESUS DO ARAG...|       1247.29|
+|           MARLIERIA|       1230.95|
++--------------------+--------------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Promedio de dinero gastado en compras por ciudad</u></i></figcaption>
+
+            <h2 style="text-align: center;">Clientes</h2>
+            
+            <p style="text-align: justify;">
+                Como parte del análisis de los clientes calcule el número total de 
+                compradores registrados, obteniendo lo siguiente:
+            </p>
+            
+            <div class="code">
+                <pre><code>
++--------------------+
+|Total_de_compradores|
++--------------------+
+|               99441|
++--------------------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Total de compradores registrados</u></i></figcaption>
+            
+            <p style="text-align: justify;">
+                De forma similar, calcule el número total de clientes 
+                registrados por ciudad, consiguiendo lo siguiente:
+            </p>
+
+            <div class="code">
+                <pre style="text-align: left;"><code>
+SELECT DISTINCT UPPER(g.Ciudad_de_venta) as Ciudad, COUNT(DISTINCT c.customer_id) as Total_de_compradores
+    FROM customers as c
+    INNER JOIN geolocation_fixed as g ON c.customer_zip_code_prefix = g.ID
+    GROUP BY Ciudad
+    ORDER BY Total_de_compradores DESC
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Consulta a la base de datos</u></i></figcaption>
+            
+            <div class="code">
+                <pre><code>
++--------------------+--------------------+
+|              Ciudad|Total_de_compradores|
++--------------------+--------------------+
+|           SAO PAULO|               15934|
+|      RIO DE JANEIRO|                6958|
+|      BELO HORIZONTE|                2791|
+|                 SIA|                1964|
+|            CURITIBA|                1525|
+|            CAMPINAS|                1444|
+|        PORTO ALEGRE|                1379|
+|            SALVADOR|                1244|
+|           GUARULHOS|                1189|
++--------------------+--------------------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Número total de clientes registrados por ciudad</u></i></figcaption>
+
+            <h2 style="text-align: center;">Pagos</h2>
+            
+            <p style="text-align: justify;">
+                Para empezar el análisis de los pagos revise la 
+                cantidad de ventas por metodo de pago, obteniendo lo siguiente:
+            </p>
+            
+            <div class="code">
+                <pre style="text-align: left;"><code>
+SELECT payment_type as Metodo_pago, COUNT(*) as Pagos
+    FROM order_payments as p
+    GROUP BY Metodo_pago
+    ORDER BY Pagos DESC
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Consulta a la base de datos</u></i></figcaption>
+
+            <div class="code">
+                <pre><code>
++-----------+-----+
+|Metodo_pago|Pagos|
++-----------+-----+
+|credit_card|76795|
+|     boleto|19784|
+|    voucher| 5775|
+| debit_card| 1529|
+|not_defined|    3|
++-----------+-----+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Cantidad de ventas por metodo de pago</u></i></figcaption>
+            
+            {% include 'graph_ecommerce/categoria_metodos_pago.html' %}
+
+            <h2 style="text-align: center;">Reseñas</h2>
+            
+            <p style="text-align: justify;">
+                Para empezar el análisis de las <b>29517</b> reseñas revise el 
+                promedio de las calificaciones por ciudad, obteniendo lo siguiente:
+            </p>
+
+            <div class="code">
+                <pre style="text-align: left;"><code>
+SELECT UPPER(g.Ciudad_de_venta) as Ciudad, ROUND(AVG(r.review_score), 2) as Promedio_calificaciones
+    FROM orders as o
+    INNER JOIN order_reviews as r USING(order_id)
+    INNER JOIN customers as c USING(customer_id)
+    INNER JOIN geolocation_fixed as g ON g.ID = c.customer_zip_code_prefix
+    GROUP BY Ciudad
+    ORDER BY Promedio_calificaciones DESC
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Consulta a la base de datos</u></i></figcaption>
+
+            <div class="code">
+                <pre><code>
++--------------------+-----------------------+
+|              Ciudad|Promedio_calificaciones|
++--------------------+-----------------------+
+|       ALAGOA GRANDE|                    5.0|
+|        DOIS RIACHOS|                    5.0|
+|  RIACHAO DO JACUIPE|                    5.0|
+|           ITAPARICA|                    5.0|
+|               LAMIM|                    5.0|
+|ALTO ALEGRE DO MA...|                    5.0|
+|             TUPANDI|                    5.0|
+|   SAO JOSE DO XINGU|                    5.0|
+|         MONTE CARLO|                    5.0|
+|          SAO RAFAEL|                    5.0|
++--------------------+-----------------------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Promedio de calificacion de reseñas por ciudad</u></i></figcaption>
+            
+            <p style="text-align: justify;">
+                Después se acomodaron las reseñas para que se 
+                pudiera crear un modelo capaz de saber si se tiene una reseña
+                positiva o negativa.
+            </p>
+
+            <div class="code">
+                <pre><code>
++------------+--------------------+--------------------+
+|Calificacion|              Titulo|             Mensaje|
++------------+--------------------+--------------------+
+|           4|           recomendo|aparelho eficient...|
+|           5|     Super recomendo|Vendedor confiáve...|
+|           1|Não chegou meu pr...|             Péssimo|
+|           5|               Ótimo|        Loja nota 10|
+|           4|          Muito bom.|Recebi exatamente...|
+|           5|                 Bom|         Recomendo ,|
+|           5|        Maravilhoso!|Tô completamente ...|
+|           5|    Entrega perfeita|Muito bom. muito ...|
+|           5|            MT lindo|            MT lindo|
++------------+--------------------+--------------------+
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Reseñas clasificadas por calificacion y todo el texto asociado</u></i></figcaption>
+            
+            <p style="text-align: justify;">
+                Para crear el modelo que nos prediga si la reseña es 
+                positiva o negativa, usare el modelo BERT. Sin embargo, 
+                fue necesario traducir todas las reseñas español para su 
+                uso en países hispanohablantes.
+                <br>Se segmentaron las reseñas 80% entrenamiento y 20% prueba.
+                Para el entrenamiento se realizaron solo 3 epoch.
+            </p>
+
+            <div class="code">
+                <pre><code>
+Loss: 0.4152904748916626, Accuracy: 0.8416513800621033
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Métrica del modelo</u></i></figcaption>
+
+            <p style="text-align: justify;">
+                Para probar el funcionamiento del modelo se usaron las siguientes
+                reseñas:
+                <br><u>"Este producto es excelente"</u> y <u>"No me gustó el servicio"</u>
+            </p>
+            
+            <div class="code">
+                <pre><code>
+tf.Tensor([0 1], shape=(2,), dtype=int64)
+                </code></pre>
+            </div>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Salida del modelo</u></i></figcaption>
+
+            <p style="text-align: justify;">
+                Como se puede observar el modelo nos dio <b>clase 0</b> para la
+                reseña <u>"Este producto es excelente"</u> y <b>clase 1</b> para
+                <u>"No me gustó el servicio"</u>.
+            </p>
+
+        </div>
+    </article>
+
+{% endblock %}

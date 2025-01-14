@@ -1,0 +1,66 @@
+{% extends "post.html" %}
+
+{% block title %}NeuroEvolucion{% endblock %}
+
+{% block post %}
+
+    <!-- Post -->
+    <article class="wrapper style1">
+        <div class="container">
+            <header>
+                <h1 style="text-align: center;"><strong>NeuroEvolucion</strong></h1>
+            </header>
+            <p style="text-align: justify;"><a href="https://github.com/IanPangDev/NeuroEvolucion" target="_blank">NeuroEvolución</a> 
+                es un proyecto que desarrolla una red neuronal capaz de mapear 
+                entornos desconocidos utilizando algoritmos genéticos para su 
+                entrenamiento. A través de un enfoque evolutivo, la red combina 
+                valores entre sus neuronas para optimizar su capacidad de adaptación 
+                y mejorar su desempeño de manera autónoma, inspirándose en los principios de 
+                la evolución natural.
+            </p>
+
+            <h2 style="text-align: center;">Tecnologías</h2>
+            
+            <ul>
+                <li style="text-align: left;">Python</li>
+                <ul style="margin-bottom: 0%;">
+                    <li style="text-align: left; font-size: medium;">Tensorflow</li>
+                    <li style="text-align: left; font-size: medium;">Seaborn</li>
+                    <li style="text-align: left; font-size: medium;">Numpy</li>
+                    <li style="text-align: left; font-size: medium;">Pygame</li>
+                </ul>
+            </ul>
+            
+            <h2 style="text-align: center;">Estructura del proyecto</h2>
+            
+            <ul>
+                <li style="text-align: left;"><b>Gráficas</b>: Coloca la gráfica de distribución de los valores de la red neuronal por iteración.</li>
+                <li style="text-align: left;"><b>Models</b>: Ahí se almacenan los modelos generados después de las iteraciones.</li>
+            </ul>
+            
+            <h2 style="text-align: center;">Descripción de los scripts</h2>
+            
+            <ul>
+                <li style="text-align: left;"><b>Analitico</b>: Realiza la gráfica de por iteración.</li>
+                <li style="text-align: left;"><b>Genetico</b>: Realiza el proceso del algoritmo genetico dentro de la red neuronal.</li>
+                <li style="text-align: left;"><b>Cerebro</b>: Clase que la red neuronal que controlara el objeto explorador.</li>
+                <li style="text-align: left;"><b>Mapa</b>: Clase que define el mapa.</li>
+                <li style="text-align: left;"><b>Sensores</b>: Clase que define los sensores.</li>
+                <li style="text-align: left;"><b>Usuario</b>: Clase que define al objeto explorador.</li>
+            </ul>
+
+            <h2 style="text-align: center;">Algoritmo Genético</h2>
+
+            <p align="center"><img src="https://raw.githubusercontent.com/IanPangDev/NeuroEvolucion/refs/heads/main/imagenes/Genetico.gif" alt="" style="width: 50%;"></img><br>Gif del algoritmo genético</p>
+
+            <h3 style="text-align: left;">Muestra de funcionamiento</h3>
+            
+            <p align="center"><img src="{{ url_for('static', filename='images/Entrenamiento.gif') }}" alt="" style="width: 50%;"></img><br>Gif del funcionamiento</p>
+            
+            <h3 style="text-align: left;">Distribuciones de los valores de la red neuronal por iteración</h3>
+            
+            <p align="center"><img src="https://raw.githubusercontent.com/IanPangDev/NeuroEvolucion/refs/heads/main/imagenes/Distribuciones.gif" alt="" style="width: 50%;"></img><br>Gif del distribuciones</p>
+        </div>
+    </article>
+    
+    {% endblock %}

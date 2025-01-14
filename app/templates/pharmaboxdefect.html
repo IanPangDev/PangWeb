@@ -1,0 +1,106 @@
+{% extends "post.html" %}
+
+{% block title %}PharmaBoxDefect{% endblock %}
+
+{% block post %}
+
+    <!-- Post -->
+    <article class="wrapper style1">
+        <div class="container">
+            <header>
+                <h1 style="text-align: center;"><strong>PharmaBoxDefect</strong></h1>
+            </header>
+            <p style="text-align: justify;">Este <a href="https://github.com/IanPangDev/PharmaBoxDefect" target="_blank">proyecto</a> 
+                busca optimizar el proceso de 
+                fabricación de empaques para medicamentos a través de un sistema de 
+                control de calidad basado en visión artificial y el uso de modelos 
+                avanzados de inteligencia artificial. Se emplearán redes neuronales 
+                convolucionales (CNN) para detectar defectos en los empaques y mejorar 
+                la precisión en su inspección, asegurando que cumplan con los estándares 
+                regulatorios y de seguridad. Además, se planea explorar el uso de un modelo 
+                NERF (Neural Radiance Fields) para mejorar el diseño de los empaques, 
+                permitiendo una visualización más detallada y realista de los mismos, lo que 
+                podría contribuir a un diseño más eficiente y funcional. El proyecto tiene 
+                como objetivos reducir defectos, aumentar la satisfacción del cliente, 
+                reducir costos por devoluciones y retrabajos, y optimizar la calidad en la 
+                fabricación de los empaques.
+            </p>
+
+            <h2 style="text-align: center;">Tecnologías</h2>
+            
+            <ul>
+                <li style="text-align: left;">Python</li>
+                <li style="text-align: left;">Blender</li>
+            </ul>
+            
+            <h2 style="text-align: center;">Estructura del proyecto</h2>
+            
+            <ul>
+                <li style="text-align: left;"><b>Procedural-3d-image-generation</b>: Contiene la generacion de los paquetes intactos y dañados.</li>
+                <li style="text-align: left;"><b>NERF</b>: Contiene el modelo de Blender para la generación del modelo NERF.</li>
+            </ul>
+
+            <h2 style="text-align: center;">Sistema de Clasificación de Empaques Dañados</h2>
+            
+            <h3 style="text-align: left;">Arquitectura de la Red Neuronal Convolucional (CNN)</h3>
+            
+            <p style="text-align: justify;">
+                Seguramente te has encontrado con la sigla <b>CNN</b> y te preguntas, 
+                ¿qué significa? Pues bien, <b>CNN</b> es la abreviatura de 
+                Convolutional Neural Network (Red Neuronal Convolucional).
+                Es un tipo de red neuronal que se utiliza principalmente 
+                en el procesamiento de imágenes, donde aprende a identificar 
+                patrones y características visuales mediante capas convolucionales, 
+                siendo esencial en tareas como la clasificación de imágenes y el 
+                reconocimiento de objetos.
+            </p>
+
+            <p align="center">
+                <a href="https://raw.githubusercontent.com/IanPangDev/PharmaBoxDefect/refs/heads/main/imagenes_md/Arquitectura.png" target="_blank">
+                    <img src="https://raw.githubusercontent.com/IanPangDev/PharmaBoxDefect/refs/heads/main/imagenes_md/Arquitectura.png" alt="" style="width: 70%;"></img>
+                </a>
+                <br>Arquitectura de la CNN
+            </p>
+            
+            <p style="text-align: justify;">
+                Ahora existe una forma de potenciar estos modelos en 
+                nuestros usos, y es a través de <b>transfer learning</b>. 
+                En este proyecto, se usó <b>DenseNet169</b>, una 
+                red preentrenada que aprovecha el conocimiento de 
+                grandes conjuntos de datos. Esto reduce el tiempo de 
+                entrenamiento, mejora el rendimiento con datos limitados 
+                y hace el proceso más eficiente.
+                <br>En tan solo tres epochs había alcanzado un 80% de accuracy. ¡Sorprendente, ¿no?!
+            </p>
+
+            <h3 style="text-align: left;">Grad-Cam de los empaques clasificados</h3>
+            
+            <p align="center">
+                <a href="https://raw.githubusercontent.com/IanPangDev/PharmaBoxDefect/refs/heads/main/imagenes_md/GradCAM_CNN.png" target="_blank">
+                    <img src="https://raw.githubusercontent.com/IanPangDev/PharmaBoxDefect/refs/heads/main/imagenes_md/GradCAM_CNN.png" alt="" style="width: 70%;"></img>
+                </a>
+                <br>Grad-Cam del testeo
+            </p>
+            
+            <h2 style="text-align: center;">Modelo NERF para el Empaque de Medicamentos</h2>
+            
+            <p style="text-align: justify;">
+                Tal vez te preguntes, ¿qué es un modelo <b>NeRF</b>? 
+                Pues bien, <b>NeRF</b> significa Neural Radiance Field (Campo de Radiancia Neuronal). 
+                Es una técnica de inteligencia artificial que genera representaciones 3D 
+                fotorrealistas a partir de imágenes 2D, usando una red neuronal para simular 
+                la luz y la densidad en el espacio, creando escenas que se pueden ver 
+                desde cualquier ángulo.
+            </p>
+
+            <h3 style="text-align: left;">Gif del entrenamiento</h3>
+            
+            <p align="center"><img src="https://raw.githubusercontent.com/IanPangDev/PharmaBoxDefect/refs/heads/main/imagenes_md/training.gif" alt="" style="width: 100%;"></img><br>Gif del entrenamiento</p>
+            
+            <h3 style="text-align: left;">Gif del resultado</h3>
+            
+            <p align="center"><img src="https://raw.githubusercontent.com/IanPangDev/PharmaBoxDefect/refs/heads/main/imagenes_md/rgb_video.gif" alt="" style="width: 50%;"></img><br>Gif del resultado</p>
+        </div>
+    </article>
+    
+    {% endblock %}

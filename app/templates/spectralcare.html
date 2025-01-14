@@ -1,0 +1,79 @@
+{% extends "post.html" %}
+
+{% block title %}SpectralCare{% endblock %}
+
+{% block post %}
+
+    <!-- Post -->
+    <article class="wrapper style1">
+        <div class="container">
+            <header>
+                <h1 style="text-align: center;"><strong>SpectralCare</strong></h1>
+            </header>
+            <p style="text-align: justify;">Analicé un 
+                <a href="https://www.kaggle.com/datasets/kinguistics/heartbeat-sounds" target="_blank">dataset</a>,
+                el cual tiene aproximadamente 800 audios de latidos de corazón. Estos están clasificados de la siguiente manera: Normal, Soplo y Extrasístole.
+                <br>El objetivo es crear un sistema capaz de detectar el tipo de enfermedad cardiaca a partir del fonocardiograma.
+                <br>Dare un breve contexto de las enfermedades:
+            </p>
+            <ul>
+                <li style="text-align: left;">Extrasístole: Sonido anormal del corazón, causado por flujo sanguíneo turbulento. Puede ser inocente (sin enfermedad) o indicar problemas en las válvulas u otras afecciones cardíacas.</li>
+                <a><img src="{{ url_for('static', filename='images/spectralcare_soplo.png') }}" alt="" style="width: 50%;"/></a>
+                <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Oscilograma de latido de corazón con soplo</u></i></figcaption>
+                <li style="text-align: left;">Soplo: Latido cardíaco adicional o prematuro, interrumpe el ritmo normal del corazón. Comúnmente causado por estrés, cafeína, fatiga o problemas cardíacos. Generalmente benigno, pero a veces necesita evaluación médica.</li>
+                <a><img src="{{ url_for('static', filename='images/spectralcare_extrasistole.png') }}" alt="" style="width: 50%;"/></a>
+                <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Electrocardiograma con extrasístole</u></i></figcaption>
+            </ul>
+
+            <h2 style="text-align: center;">Tecnologías</h2>
+            
+            <ul>
+                <li style="text-align: left;">Python</li>
+                    <ul style="margin-bottom: 0%;">
+                        <li style="text-align: left; font-size: medium;">Tensorflow</li>
+                        <li style="text-align: left; font-size: medium;">Scipy</li>
+                        <li style="text-align: left; font-size: medium;">Pandas</li>
+                    </ul>
+            </ul>
+
+            <h2 style="text-align: center;">Análisis</h2>
+
+            <p style="text-align: justify">El porcentaje de cada enfermedad se muestra a continuación.</p>
+            <a><img src="{{ url_for('static', filename='images/spectralcare_distribucion_cat.png') }}" alt="" style="width: 50%;"/></a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Gráfico circular con porcentaje de muestras por tipo de enfermedad</u></i></figcaption>
+            <p style="text-align: justify;">La duración de los audios variaba, por lo que fue necesario ampliarlas a 27 segundos.</p>
+            <audio controls="controls" preload="auto">
+                <source src="{{url_for('static', filename='audios/0.5seg.mp3')}}" type="audio/mpeg">
+            </audio>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Audio de 0.5 segundo</u></i></figcaption>
+            <audio controls="controls" preload="auto">
+                <source src="{{url_for('static', filename='audios/27seg.mp3')}}" type="audio/mpeg">
+            </audio>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Audio ampliado a 27 segundos</u></i></figcaption>
+            <a><img src="{{ url_for('static', filename='images/spectralcare_espectrograma_duracion.png') }}" alt="" style="width: 50%;"/></a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Oscilograma del audio con duración normal y ampliada</u></i></figcaption>
+            <p style="text-align: justify;">Un poco más de teoría ... Se sabe que los ruidos cardiacos tienen frecuencias de 20[Hz] a 150[Hz], con ello en mente se aplicará un banco de filtros pasa-banda (FIRWIN de 100 coeficientes) para obtener las armónicas contenidas en el rango del latido del corazón y un filtro pasa-bajas (Butterworth de orden 8).</p>
+            <audio controls="controls" preload="auto">
+                <source src="{{url_for('static', filename='audios/voz.mp3')}}" type="audio/mpeg">
+            </audio>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Audio de fonocardiograma con ruido de voz</u></i></figcaption>
+            <audio controls="controls" preload="auto">
+                <source src="{{url_for('static', filename='audios/voz_filtro.mp3')}}" type="audio/mpeg">
+            </audio>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Audio de fonocardiograma con aplicación del banco de filtros</u></i></figcaption>
+            <a><img src="{{ url_for('static', filename='images/spectralcare_filtros.png') }}" alt="" style="width: 70%;"/></a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Espectrogramas con y sin filtro</u></i></figcaption>
+            <p style="text-align: justify;">Se recopilaron y clasificaron espectrogramas en formato JPG (1500x800 píxeles). Se importaron imágenes a 250x250 píxeles y se destinó el 70% para el entrenamiento y el 30% para la prueba. Se normalizaron los pixeles y se aplicó One-hot-encoding a las clases. Para equilibrar la clase extrasístole, se ajustó la importancia de cada clase. Se utilizó el modelo MobileNetV2 imagenet para transferencia de aprendizaje, con tres capas densas (400, 200, 3 neuronas).</p>
+            <a href="{{ url_for('static', filename='images/spectralcare_arquitecturaRed.jpg') }}" target="_blank">
+                <img src="{{ url_for('static', filename='images/spectralcare_arquitecturaRed.jpg') }}" alt="" style="width: 70%;"/>
+            </a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Arquitectura de la red</u></i></figcaption>
+            <p style="text-align:  justify;">Tras el entrenamiento, la precisión en la predicción del bloque de prueba fue del 76%.</p>
+            <a href="{{ url_for('static', filename='images/spectralcare_matrizConfusion.png') }}" target="_blank">
+                <img src="{{ url_for('static', filename='images/spectralcare_matrizConfusion.png') }}" alt="" style="width: 40%;"/>
+            </a>
+            <figcaption style="text-align: center; margin-bottom: 3%;"><i><u>Matriz de confusión de los resultados</u></i></figcaption>
+        </div>
+    </article>
+
+{% endblock %}

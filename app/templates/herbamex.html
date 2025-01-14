@@ -1,0 +1,76 @@
+{% extends "post.html" %}
+
+{% block title %}HERBAMEX{% endblock %}
+
+{% block post %}
+
+    <!-- Post -->
+    <article class="wrapper style1">
+        <div class="container">
+            <header>
+                <h1 style="text-align: center;"><strong>HERBAMEX</strong></h1>
+            </header>
+            <p style="text-align: justify;"><a href="https://github.com/IanPangDev/Herbamex" target="_blank">Herbamex</a> 
+                es un innovador invernadero doméstico 
+                diseñado para el cultivo y cuidado de plantas aromáticas 
+                de herbolaria mexicana. Este sistema inteligente permite monitorizar 
+                en tiempo real la humedad y temperatura del invernadero, 
+                garantizando así las condiciones ideales para el crecimiento óptimo 
+                de las plantas. Utiliza procesamiento de imágenes para identificar 
+                las diferentes especies de plantas y determinar sus necesidades 
+                específicas, ajustando automáticamente el ambiente para su bienestar. 
+                La información se almacena en un servidor web y se puede acceder a ella 
+                mediante reportes bajo demanda. Además, Herbamex muestra datos relevantes 
+                en displays físicos para facilitar la supervisión y el control del invernadero.
+            </p>
+
+            <h2 style="text-align: center;">Tecnologías</h2>
+            
+            <ul>
+                <li style="text-align: left;">Raspberry Pi 5</li>
+                <li style="text-align: left;">Python</li>
+                <li style="text-align: left;">Sqlite</li>
+                <li style="text-align: left;">Android (Java)</li>
+                <li style="text-align: left;">Unity (C#)</li>
+                <li style="text-align: left;">Blender</li>
+                <li style="text-align: left;">Firebase</li>
+            </ul>
+            
+            <h2 style="text-align: center;">Estructura del proyecto</h2>
+            
+            <ul>
+                <li style="text-align: left;">Herbamex_Unity: Contiene el proyecto de Unity.</li>
+                <li style="text-align: left;">Herbamex-Android: Contiene el proyecto de Android exportado de Unity.</li>
+                <li style="text-align: left;">Herbamex-Blender:Contiene los modelos de Blender.</li>
+                <li style="text-align: left;">Herbamex-Raspberry: Contiene los scripts que controlan el invernadero (desde la Raspberry Pi 5).)</li>
+            </ul>
+
+            <h2 style="text-align: center;">Sistema de invernadero</h2>
+            
+            <h3 style="text-align: left;">Real</h3>
+            <p align="center">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Frente.jpg" style="width: 20%; height: auto; margin-right: 3px;" alt="Frontal">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Lateral.jpg" style="width: 20%; height: auto; margin-right: 3px;" alt="Lateral">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Superior.jpg" style="width: 20%; height: auto;" alt="Superior">
+                <br>Imágenes frontal, lateral y superior del invernadero
+            </p>
+            
+            <h3 style="text-align: left;">Aplicación</h3>
+            <p align="center">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/LCD.jpg" style="width: 20%; height: auto; margin-right: 3px;" alt="LCD">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Riego.jpg" style="width: 20%; height: auto; margin-right: 3px;" alt="Riego">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Reporte.jpg" style="width: 20%; height: auto; margin-right: 3px;" alt="Reporte">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Vista.jpg" style="width: 20%; height: auto;" alt="Vista">
+                <br>Imágenes de la aplicación móvil
+            </p>            
+            
+            <h2 style="text-align: center;">Funcionamiento de la Aplicación Móvil</h2>
+
+            <p align="center">
+                <img src="https://raw.githubusercontent.com/IanPangDev/Herbamex/refs/heads/main/Imagenes/Herbamex.gif" width=200 height=400></img>
+            </p>
+
+        </div>
+    </article>
+    
+    {% endblock %}
