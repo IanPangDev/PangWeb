@@ -52,5 +52,7 @@ def page(path):
             return jsonify([{**to_dict([proj])[0], 'fecha': formatted_date} for proj, formatted_date in proj_fil])
         else:
             return render_template('404.html')
+    elif path == 'get_historico_clicks':
+        return jsonify([i.to_dict() for i in Historico_clicks.query.all()])
     else:
         return render_template('404.html')

@@ -6,7 +6,7 @@ class Historico_clicks(db.Model):
     __tablename__ = 'historico_clicks'
 
     id = db.Column(db.Integer, primary_key=True)
-    id_proyecto = db.Column(db.Integer, foreign_key=True)
+    id_proyecto = db.Column(db.Integer, nullable=False)
     fecha = db.Column(db.DateTime, default=datetime.datetime.now(datetime.timezone.utc), nullable=False)
 
     @classmethod
@@ -51,3 +51,10 @@ class Historico_clicks(db.Model):
             raise e
         finally:
             session.close()
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'id_proyecto': self.id_proyecto,
+            'fecha': self.fecha.isoformat()
+        }
