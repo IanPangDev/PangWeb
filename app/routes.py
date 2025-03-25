@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, redirect, jsonify
 import urllib.parse as parse
 import re
 from sqlalchemy import func
-from .models import Proyectos, Categorias, Proyectos_Categorias
+from .models import Proyectos, Categorias, Proyectos_Categorias, Historico_clicks
 
 bp = Blueprint('main', __name__)
 
@@ -25,7 +25,9 @@ def index():
 @bp.route("/<path:path>/")
 def page(path):
     if Proyectos.query.with_entities(Proyectos.path).\
-        distinct().filter(Proyectos.path == path).first() is not None:
+        distinct().filter(Proyectos.path == path).first() is not None: 
+        Historico_clicks.insert(
+            id_proyecto=Proyectos.query.with_entities(Proyectos.id).distinct().filter(Proyectos.path == path).first()[0])
         return render_template(path)
     elif re.search(r"\w*/index.html", path):
         return redirect('/')
